@@ -15,22 +15,16 @@ No artifacts are being published (yet), so the project has to be compiled locall
 mvn clean install
 ```
 
-Include the following dependencies in the application's POM file:
+Include the following dependency in the application's POM file:
 
 ```xml
-<dependencies>
-  <dependency>
-    <groupId>nl.geonovum.labs.jsonfg</groupId>
-    <artifactId>json-fg-jackson</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-  </dependency>
-  <dependency>
-    <groupId>nl.geonovum.labs.jsonfg</groupId>
-    <artifactId>json-fg-jts</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-  </dependency>
-</dependencies>
+<dependency>
+  <groupId>nl.geonovum.labs.jsonfg</groupId>
+  <artifactId>json-fg-jackson</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+</dependency>
 ```
+
 ### Encoding features
 
 The library contains basic abstractions which align with the JSON-FG document schemas. These abstractions can be 
@@ -65,8 +59,18 @@ public class Example {
 
 ### Encoding a JTS Geometry object
 
-When you would just want to encode a JTS Geometry object to a JSON-FG representation, you can use the standard JTS
-type mapping.
+If you want to encode a JTS Geometry object to a JSON-FG representation, you can use the standard JTS
+type mapping. To enable this, add an extra dependency for the JTS integration:
+
+```xml
+<dependency>
+  <groupId>nl.geonovum.labs.jsonfg</groupId>
+  <artifactId>json-fg-jts</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+</dependency>
+```
+
+Then, pass the JTS type mapping as an option to the JSON-FG module for Jackson:
 
 ```java
 import com.fasterxml.jackson.databind.json.JsonMapper;
