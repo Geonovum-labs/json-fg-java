@@ -6,8 +6,8 @@ in London. This library is compatible with [v0.2.1](https://docs.ogc.org/DRAFTS/
 
 ## Getting started
 
-The following example is based on JTS, combined with the Jackson encoder. Currently, only JTS en Jackson integrations
-have been implemented. Other integrations could be added in the future.
+The following example is based on JTS (Java Topology Suite), combined with the Jackson encoding library. Currently, only
+JTS and Jackson integrations have been implemented. Other integrations could be added in the future.
 
 No artifacts are being published (yet), so the project has to be compiled locally using Maven:
 
@@ -34,19 +34,22 @@ Include the following dependencies in the application's POM file:
 
 ### Encoding a JTS Geometry object
 
-When you would just want to encode a JTS Geometry object to a JSON-FG representation, you can use the standard type
-binding.
+When you would just want to encode a JTS Geometry object to a JSON-FG representation, you can use the standard JTS
+type mapping.
 
 ```java
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import nl.geonovum.labs.jsonfg.jackson.JSONFGModule;
+import nl.geonovum.labs.jsonfg.jts.JTSGeometryMapping;
 import org.locationtech.jts.geom.Geometry;
 
 public class Example {
   
   public void encode(Geometry geometry) {
     JsonMapper jsonMapper = new JsonMapper();
-    jsonMapper.registerModule(new JSONFGModule());
+    jsonMapper.registerModule(new JSONFGModule(Options.builder()
+        .typeMapping(new JTSGeometryMapping())
+        .build()));
     String document = jsonMapper.writeValueAsString(geometry);
   }
 }

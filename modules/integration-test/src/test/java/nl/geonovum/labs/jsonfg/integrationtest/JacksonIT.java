@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.io.IOException;
 import nl.geonovum.labs.jsonfg.jackson.JSONFGModule;
+import nl.geonovum.labs.jsonfg.jackson.JSONFGModule.Options;
 import nl.geonovum.labs.jsonfg.jts.JTSGeometryMapping;
 import nl.geonovum.labs.jsonfg.model.Coordinate;
 import nl.geonovum.labs.jsonfg.model.Feature;
@@ -42,7 +43,7 @@ class JacksonIT {
   @Test
   void serializeGeometryWithJTSBinding() throws IOException {
     var jsonMapper = new JsonMapper();
-    jsonMapper.registerModule(new JSONFGModule(JSONFGModule.Options.builder()
+    jsonMapper.registerModule(new JSONFGModule(Options.builder()
         .typeMapping(new JTSGeometryMapping())
         .build()));
     var geometry = createJTSPoint();
@@ -55,7 +56,7 @@ class JacksonIT {
   @Test
   void serializeFeatureWithJTSBinding() throws IOException {
     var jsonMapper = new JsonMapper();
-    jsonMapper.registerModule(new JSONFGModule(JSONFGModule.Options.builder()
+    jsonMapper.registerModule(new JSONFGModule(Options.builder()
         .typeMapping(new JTSGeometryMapping())
         .typeMapping(new BuildingMapping())
         .build()));
