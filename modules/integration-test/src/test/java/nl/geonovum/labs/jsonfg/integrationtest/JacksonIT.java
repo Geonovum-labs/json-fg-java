@@ -89,6 +89,22 @@ class JacksonIT {
   }
 
   @Test
+  void deserializeFeature() throws IOException {
+    var jsonMapper = new JsonMapper();
+    jsonMapper.registerModule(new JSONFGModule());
+    var doc = "{\"type\":\"Feature\",\"conformsTo\":[\"[ogc-json-fg-1-0.2:core]\"],\"id\":\"123\",\"time\":null," +
+        "\"place\":{\"type\":\"Point\",\"coordinates\":[-0.12459925,51.500779]},\"geometry\":{\"type\":\"Point\"," +
+        "\"coordinates\":[-0.12459925,51.500779]},\"properties\":{\"name\":\"Building 1\"}}";
+    var feature = jsonMapper.readValue(doc, Feature.class);
+
+    assertThat(feature).isNotNull();
+    assertThat(feature.getConformsTo()).isNotNull()
+        .hasSize(1);
+    assertThat(feature.getProperties()).isNotNull()
+        .hasSize(1);
+  }
+
+  @Test
   void serializeFeature() throws IOException {
     var jsonMapper = new JsonMapper();
     jsonMapper.registerModule(new JSONFGModule());

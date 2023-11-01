@@ -10,6 +10,6 @@ public final class URISerializer extends JsonSerializer<URI> {
 
   @Override
   public void serialize(URI uri, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-    jsonGenerator.writeString(uri.getCURIE());
+    jsonGenerator.writeString(uri.getValue(true));
   }
 }
