@@ -5,17 +5,17 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
-import nl.geonovum.labs.jsonfg.model.Feature;
+import nl.geonovum.labs.jsonfg.model.FeatureCollection;
 
-public final class FeatureDeserializer extends JsonDeserializer<Feature> {
+public final class FeatureCollectionDeserializer extends JsonDeserializer<FeatureCollection> {
 
   @Override
-  public Feature deserialize(JsonParser parser, DeserializationContext context) throws IOException {
+  public FeatureCollection deserialize(JsonParser parser, DeserializationContext context) throws IOException {
     var node = parser.getCodec()
         .readTree(parser);
 
     if (node instanceof ObjectNode objectNode) {
-      return ParseUtil.parseFeature(objectNode);
+      return ParseUtil.parseFeatureCollection(objectNode);
     }
 
     throw new ParseException("Geometry is not an object node.");

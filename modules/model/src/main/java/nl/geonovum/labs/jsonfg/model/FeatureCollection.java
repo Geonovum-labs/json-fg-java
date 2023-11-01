@@ -13,7 +13,7 @@ public final class FeatureCollection {
 
   private final String featureType;
 
-  private final short geometryDimension;
+  private final int geometryDimension;
 
   private final String featureSchema;
 

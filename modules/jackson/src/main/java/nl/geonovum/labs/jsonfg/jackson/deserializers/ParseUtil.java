@@ -14,6 +14,8 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import nl.geonovum.labs.jsonfg.model.CoordRefSys;
 import nl.geonovum.labs.jsonfg.model.Coordinate;
+import nl.geonovum.labs.jsonfg.model.Feature;
+import nl.geonovum.labs.jsonfg.model.FeatureCollection;
 import nl.geonovum.labs.jsonfg.model.Geometry;
 import nl.geonovum.labs.jsonfg.model.GeometryGeoJSON;
 import nl.geonovum.labs.jsonfg.model.LineString;
@@ -38,6 +40,106 @@ public final class ParseUtil {
   private static final String COORD_REF_SYS_KEY = "coordRefSys";
 
   private static final String COORDINATES_KEY = "coordinates";
+
+  public static FeatureCollection parseFeatureCollection(JsonNode node) {
+    var typeNode = node.get("type");
+
+    if (!(FeatureCollection.TYPE.equals(typeNode.asText()))) {
+      throw new ParseException("Type is missing or not equal to 'FeatureCollection'.");
+    }
+
+    var featureCollectionBuilder = FeatureCollection.builder();
+
+    Optional.ofNullable(node.get("conformsTo"))
+        .ifPresent(conformsToNode -> featureCollectionBuilder.conformsTo(ParseUtil.parseURIs(conformsToNode)));
+
+    Optional.ofNullable(node.get("featureType"))
+        .map(JsonNode::asText)
+        .ifPresent(featureCollectionBuilder::featureType);
+
+    Optional.ofNullable(node.get("geometryDimension"))
+        .map(ParseUtil::parseGeometryDimension)
+        .ifPresent(featureCollectionBuilder::geometryDimension);
+
+    Optional.ofNullable(node.get("featureSchema"))
+        .map(JsonNode::asText)
+        .ifPresent(featureCollectionBuilder::featureSchema);
+
+    Optional.ofNullable(node.get("coordRefSys"))
+        .map(ParseUtil::parseCoordRefSys)
+        .ifPresent(featureCollectionBuilder::coordRefSys);
+
+    Optional.ofNullable(node.get("features"))
+        .map(ParseUtil::parseFeatures)
+        .ifPresent(featureCollectionBuilder::features);
+
+    return featureCollectionBuilder.build();
+  }
+
+  public static int parseGeometryDimension(JsonNode node) {
+    if (!node.isInt()) {
+      throw new ParseException("Geometry dimension is not an integer.");
+    }
+
+    return node.asInt();
+  }
+
+  public static Feature[] parseFeatures(JsonNode node) {
+    if (!(node.isArray())) {
+      throw new ParseException("Features is not an array.");
+    }
+
+    return createNodeStream(node)
+        .map(ParseUtil::parseFeature)
+        .toArray(Feature[]::new);
+  }
+
+  public static Feature parseFeature(JsonNode node) {
+    var typeNode = node.get("type");
+
+    if (!(Feature.TYPE.equals(typeNode.asText()))) {
+      throw new ParseException("Type is missing or not equal to 'Feature'.");
+    }
+
+    var featureBuilder = Feature.builder();
+
+    Optional.ofNullable(node.get("conformsTo"))
+        .ifPresent(conformsToNode -> featureBuilder.conformsTo(ParseUtil.parseURIs(conformsToNode)));
+
+    Optional.ofNullable(node.get("id"))
+        .ifPresent(idNode -> featureBuilder.id(ParseUtil.parseFeatureID(idNode)));
+
+    Optional.ofNullable(node.get("featureType"))
+        .map(JsonNode::asText)
+        .ifPresent(featureBuilder::featureType);
+
+    Optional.ofNullable(node.get("featureSchema"))
+        .map(JsonNode::asText)
+        .ifPresent(featureBuilder::featureSchema);
+
+    Optional.ofNullable(node.get("time"))
+        .ifPresent(timeNode -> {
+          // TODO
+        });
+
+    Optional.ofNullable(node.get("coordRefSys"))
+        .map(ParseUtil::parseCoordRefSys)
+        .ifPresent(featureBuilder::coordRefSys);
+
+    Optional.ofNullable(node.get("place"))
+        .map(ParseUtil::parseGeometry)
+        .ifPresent(featureBuilder::place);
+
+    Optional.ofNullable(node.get("geometry"))
+        .map(ParseUtil::parseGeometryGeoJSON)
+        .ifPresent(featureBuilder::geometry);
+
+    Optional.ofNullable(node.get("properties"))
+        .map(ParseUtil::parseProperties)
+        .ifPresent(featureBuilder::properties);
+
+    return featureBuilder.build();
+  }
 
   public static Object parseFeatureID(JsonNode node) {
     return node.isNumber() ? node.numberValue() : node.asText();
