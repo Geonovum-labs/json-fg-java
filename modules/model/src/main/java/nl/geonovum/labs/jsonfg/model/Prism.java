@@ -9,7 +9,7 @@ public final class Prism extends AbstractGeometry {
 
   public static final String TYPE = "Prism";
 
-  private final GeometryGeoJSON base;
+  private final Geometry base;
 
   private final Double lower;
 
@@ -18,5 +18,10 @@ public final class Prism extends AbstractGeometry {
   @Override
   public String getType() {
     return TYPE;
+  }
+
+  public static boolean baseSupports(Geometry geometry) {
+    return geometry instanceof GeometryGeoJSON
+        && !(geometry instanceof GeometryCollection);
   }
 }

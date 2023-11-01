@@ -2,7 +2,7 @@
 
 This library aims to make encoding and decoding of JSON-FG documents as easy as possible. This library is experimental
 and was developed as a community effort during the [OGC’s October 2023 Open Standards Code Sprint](https://developer.ogc.org/sprints/22/)
-in London. This library is compatible with [v0.2.1](https://docs.ogc.org/DRAFTS/21-045.html) of the JSON-FG specification.
+in London. The implementation is compatible with [v0.2.1](https://docs.ogc.org/DRAFTS/21-045.html) of the JSON-FG specification.
 
 ## Getting started
 
@@ -57,7 +57,7 @@ public class Example {
 }
 ```
 
-### Encoding a JTS Geometry object
+### Encoding a JTS Geometry
 
 If you want to encode a JTS Geometry object to a JSON-FG representation, you can use the standard JTS
 type mapping. To enable this, add an extra dependency for the JTS integration:

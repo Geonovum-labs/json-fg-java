@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
+import nl.geonovum.labs.jsonfg.jackson.deserializers.GeometryDeserializer;
 import nl.geonovum.labs.jsonfg.jackson.serializers.CoordinateSerializer;
 import nl.geonovum.labs.jsonfg.jackson.serializers.URISerializer;
 import nl.geonovum.labs.jsonfg.core.TypeMapping;
@@ -28,6 +29,7 @@ public final class JSONFGModule extends SimpleModule {
   public JSONFGModule(Options options) {
     addSerializer(Coordinate.class, new CoordinateSerializer());
     addSerializer(URI.class, new URISerializer());
+    addDeserializer(Geometry.class, new GeometryDeserializer());
     setMixInAnnotation(Geometry.class, GeometryMixin.class);
     setMixInAnnotation(Feature.class, FeatureMixin.class);
     setMixInAnnotation(FeatureCollection.class, FeatureCollectionMixin.class);

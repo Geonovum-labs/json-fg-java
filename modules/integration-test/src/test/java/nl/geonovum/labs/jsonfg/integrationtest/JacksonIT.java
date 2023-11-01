@@ -9,7 +9,10 @@ import nl.geonovum.labs.jsonfg.jackson.JSONFGModule.Options;
 import nl.geonovum.labs.jsonfg.jts.JTSGeometryMapping;
 import nl.geonovum.labs.jsonfg.model.Coordinate;
 import nl.geonovum.labs.jsonfg.model.Feature;
+import nl.geonovum.labs.jsonfg.model.Geometry;
+import nl.geonovum.labs.jsonfg.model.LineString;
 import nl.geonovum.labs.jsonfg.model.Point;
+import nl.geonovum.labs.jsonfg.model.Prism;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
@@ -23,10 +26,66 @@ class JacksonIT {
   void serializeGeometry() throws IOException {
     var jsonMapper = new JsonMapper();
     jsonMapper.registerModule(new JSONFGModule());
-    var point = createPoint();
-    var doc = jsonMapper.writeValueAsString(point);
+    var geometry = createPoint();
+    var doc = jsonMapper.writeValueAsString(geometry);
 
     assertThat(doc).isEqualTo("{\"type\":\"Point\",\"coordinates\":[-0.12459925,51.500779]}");
+  }
+
+  @Test
+  void deserialize2DPoint() throws IOException {
+    var jsonMapper = new JsonMapper();
+    jsonMapper.registerModule(new JSONFGModule());
+    var doc = "{\"type\":\"Point\",\"coordinates\":[-0.12459925,51.500779]}";
+    var geometry = jsonMapper.readValue(doc, Geometry.class);
+
+    assertThat(geometry).isInstanceOfSatisfying(Point.class, point -> {
+      var coordinate = point.getCoordinates();
+      assertThat(coordinate).isNotNull();
+      assertThat(coordinate.getX()).isEqualTo(-0.12459925);
+      assertThat(coordinate.getY()).isEqualTo(51.500779);
+      assertThat(coordinate.getZ()).isNaN();
+    });
+  }
+
+  @Test
+  void deserialize3DPoint() throws IOException {
+    var jsonMapper = new JsonMapper();
+    jsonMapper.registerModule(new JSONFGModule());
+    var doc = "{\"type\":\"Point\",\"coordinates\":[-0.12459925,51.500779, 36.4]}";
+    var geometry = jsonMapper.readValue(doc, Geometry.class);
+
+    assertThat(geometry).isInstanceOfSatisfying(Point.class, point -> {
+      var coordinate = point.getCoordinates();
+      assertThat(coordinate).isNotNull();
+      assertThat(coordinate.getX()).isEqualTo(-0.12459925);
+      assertThat(coordinate.getY()).isEqualTo(51.500779);
+      assertThat(coordinate.getZ()).isEqualTo(36.4);
+    });
+  }
+
+  @Test
+  void deserializeLineString() throws IOException {
+    var jsonMapper = new JsonMapper();
+    jsonMapper.registerModule(new JSONFGModule());
+    var doc = "{\"type\":\"LineString\",\"coordinates\":[[-0.130430186,51.50024234],[-0.130430186,51.49970113]]}";
+    var geometry = jsonMapper.readValue(doc, Geometry.class);
+
+    assertThat(geometry).isInstanceOf(LineString.class);
+  }
+
+  @Test
+  void deserializePrism() throws IOException {
+    var jsonMapper = new JsonMapper();
+    jsonMapper.registerModule(new JSONFGModule());
+    var doc = "{\"type\":\"Prism\",\"base\":{\"type\":\"LineString\",\"coordinates\":[[-0.130430186,51.50024234],[-0.130430186,51.49970113]]},\"upper\":5.2}";
+    var geometry = jsonMapper.readValue(doc, Geometry.class);
+
+    assertThat(geometry).isInstanceOfSatisfying(Prism.class, prism -> {
+      assertThat(prism.getBase()).isInstanceOf(LineString.class);
+      assertThat(prism.getLower()).isNull();
+      assertThat(prism.getUpper()).isEqualTo(5.2);
+    });
   }
 
   @Test
