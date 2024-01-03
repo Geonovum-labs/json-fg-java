@@ -34,7 +34,7 @@
         <jackson.version>2.16.0</jackson.version>
         <lombok.version>1.18.30</lombok.version>
         <junit.version>5.10.1</junit.version>
-        <assertj.version>3.24.2</assertj.version>
+        <assertj.version>3.25.1</assertj.version>
     </properties>
 
     <dependencies>
