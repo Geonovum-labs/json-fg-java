@@ -32,7 +32,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jts.version>1.20.0</jts.version>
         <jackson.version>2.18.2</jackson.version>
-        <lombok.version>1.18.36</lombok.version>
+        <lombok.version>1.18.38</lombok.version>
         <junit.version>5.12.1</junit.version>
         <assertj.version>3.27.3</assertj.version>
     </properties>
